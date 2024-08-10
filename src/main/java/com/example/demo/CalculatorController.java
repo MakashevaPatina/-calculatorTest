@@ -1,14 +1,16 @@
 package com.example.demo;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/calculator")
 public class CalculatorController {
-    private final CalculatorService calculatorService;
+    private final CalculatorServiceImpl calculatorService;
 
-    public CalculatorController(CalculatorService calculatorService) {
+    public CalculatorController(CalculatorServiceImpl calculatorService) {
         this.calculatorService = calculatorService;
     }
 
@@ -18,34 +20,30 @@ public class CalculatorController {
     }
 
     @GetMapping(path = "/plus")
-    public String plus(@RequestParam(value = "num1", required = false) Double a, @RequestParam(value = "num2", required = false) Double b) {
-        if (a == null || b == null) {
-            return "Нужно указать все требуемые переменные.";
-        }
-        return calculatorService.plus(a, b);
+    public String plus(@RequestParam double num1, @RequestParam double num2) {
+        double result = calculatorService.plus(num1, num2);
+        return String.format("%.2f + %.2f = %.2f", num1, num2, result);
     }
 
     @GetMapping(path = "/minus")
-    public String minus(@RequestParam(value = "num1", required = false) Double a, @RequestParam(value = "num2", required = false) Double b) {
-        if (a == null || b == null) {
-            return "Нужно указать все требуемые переменные.";
-        }
-        return calculatorService.minus(a, b);
+    public String minus(@RequestParam double num1, @RequestParam double num2) {
+        double result = calculatorService.minus(num1, num2);
+        return String.format("%.2f - %.2f = %.2f", num1, num2, result);
     }
 
     @GetMapping(path = "/multiply")
-    public String multiply(@RequestParam(value = "num1", required = false) Double a, @RequestParam(value = "num2", required = false) Double b) {
-        if (a == null || b == null) {
-            return "Нужно указать все требуемые переменные.";
-        }
-        return calculatorService.multiply(a, b);
+    public String multiply(@RequestParam double num1, @RequestParam double num2) {
+        double result = calculatorService.multiply(num1, num2);
+        return String.format("%.2f * %.2f = %.2f", num1, num2, result);
     }
 
     @GetMapping(path = "/divide")
-    public String divide(@RequestParam(value = "num1", required = false) Double a, @RequestParam(value = "num2", required = false) Double b) {
-        if (a == null || b == null) {
-            return "Нужно указать все требуемые переменные.";
+    public String divide(@RequestParam double num1, @RequestParam double num2) {
+        try {
+            double result = calculatorService.divide(num1, num2);
+            return String.format("%.2f / %.2f = %.2f", num1, num2, result);
+        } catch (IllegalArgumentException e) {
+            return e.getMessage();
         }
-        return calculatorService.divide(a, b);
     }
 }
